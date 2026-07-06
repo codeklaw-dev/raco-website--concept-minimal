@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RACO AI Technologies — Custom Software and Private AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F7F4; --white:#FFFFFF; --ink:#0B0B0B; --line:#111111;
+  --muted:#6B6B6B; --gold:#C8A45D; --ember:#D86F45; --forest:#29443A;
+  --chrome:#D8D8D8; --hair:1px solid var(--line);
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+
+/* ---------- utilities ---------- */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--line)}
+.eyebrow .idx{color:var(--ink)}
+h1,h2,h3{font-family:var(--disp);font-weight:500;letter-spacing:-.03em;line-height:1.04}
+h1{font-size:clamp(2.6rem,6.5vw,5.4rem)}
+h2{font-size:clamp(1.9rem,4vw,3.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.45rem);letter-spacing:-.015em}
+.lead{font-size:clamp(1.05rem,1.6vw,1.25rem);color:var(--muted);max-width:56ch}
+.chrome-word{
+  background:linear-gradient(100deg,#7a7a7a 0%,#e9e9e9 22%,#8f8f8f 38%,#f2f2f0 52%,#5f5f5f 68%,#d8d8d8 84%,#8a8a8a 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:sheen 7s linear infinite;
+}
+@keyframes sheen{0%{background-position:0% 0}100%{background-position:220% 0}}
+@media (prefers-reduced-motion:reduce){
+  .chrome-word{animation:none}
+  .ticker-track{animation:none!important}
+  *{transition:none!important}
+}
+
+/* ---------- nav ---------- */
+header{position:sticky;top:0;z-index:60;background:rgba(247,247,244,.92);backdrop-filter:blur(8px);border-bottom:var(--hair)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--disp);font-weight:600;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.logo .dot{width:9px;height:9px;background:linear-gradient(135deg,#f0f0ee,#8b8b8b);border:1px solid var(--line);border-radius:50%}
+.logo sup{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--muted);font-weight:400}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:8px 14px;border:1px solid transparent;transition:border-color .18s ease}
+.nav-links a:hover,.nav-links a:focus-visible{border-color:var(--line)}
+.nav-links a.active{border-color:var(--line);background:var(--white)}
+.nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:9px 18px;background:var(--ink);color:var(--paper);border:1px solid var(--ink);transition:background .18s ease,color .18s ease}
+.nav-cta:hover,.nav-cta:focus-visible{background:transparent;color:var(--ink)}
+.burger{display:none;background:none;border:var(--hair);padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- ticker ---------- */
+.ticker{border-bottom:var(--hair);background:var(--white);overflow:hidden;height:34px;display:flex;align-items:center}
+.ticker-track{display:flex;gap:0;white-space:nowrap;animation:tick 46s linear infinite;will-change:transform}
+.ticker span{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 28px;border-right:1px solid #e3e3df}
+.ticker b{color:var(--ink);font-weight:700}
+.ticker .ok{color:var(--forest)} .ticker .amber{color:var(--ember)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- page sections ---------- */
+.page{display:none}
+.page.visible{display:block}
+section{border-bottom:var(--hair)}
+.section-pad{padding:88px 0}
+.section-head{display:flex;flex-direction:column;gap:20px;margin-bottom:56px}
+
+/* hero */
+.hero{padding:110px 0 96px}
+.hero-grid{display:grid;grid-template-columns:1.4fr .6fr;gap:64px;align-items:end}
+.hero h1{margin:26px 0 28px;max-width:16ch}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:15px 28px;border:1px solid var(--ink);transition:all .18s ease;display:inline-block}
+.btn-solid{background:var(--ink);color:var(--paper)}
+.btn-solid:hover,.btn-solid:focus-visible{background:transparent;color:var(--ink)}
+.btn-ghost:hover,.btn-ghost:focus-visible{background:var(--ink);color:var(--paper)}
+.hero-meta{border:var(--hair);background:var(--white)}
+.hero-meta div{padding:18px 20px;border-bottom:1px solid #e3e3df;display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.hero-meta div:last-child{border-bottom:none}
+.hero-meta .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.hero-meta .v{font-family:var(--disp);font-weight:600;font-size:22px;letter-spacing:-.02em}
+
+/* business lines */
+.lines-grid{display:grid;grid-template-columns:repeat(4,1fr);border:var(--hair);background:var(--white)}
+.line-cell{padding:38px 30px;border-right:var(--hair);transition:background .18s ease}
+.line-cell:last-child{border-right:none}
+.line-cell:hover{background:var(--paper)}
+.line-cell .no{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.line-cell h3{margin:14px 0 10px;font-size:1.25rem}
+.line-cell p{font-size:13.5px;color:var(--muted)}
+
+/* stack strip */
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);border:var(--hair);background:var(--white)}
+.stack-grid.five{grid-template-columns:repeat(5,1fr)}
+.stack-cell{padding:34px 28px;border-right:var(--hair);transition:background .18s ease}
+.stack-cell:last-child{border-right:none}
+.stack-cell:hover{background:var(--paper)}
+.stack-cell .code{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.stack-cell h3{margin:14px 0 10px;font-size:1.35rem}
+.stack-cell p{font-size:13.5px;color:var(--muted)}
+.stack-cell .role{margin-top:18px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--forest)}
+
+/* operating layer */
+.layer-stack{border:var(--hair);background:var(--white)}
+.layer{display:grid;grid-template-columns:90px 240px 1fr;gap:24px;padding:20px 28px;border-bottom:1px solid #e7e7e3;align-items:baseline;transition:background .15s ease}
+.layer:last-child{border-bottom:none}
+.layer:hover{background:var(--paper)}
+.layer .code{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;color:var(--muted)}
+.layer h3{font-size:1.05rem}
+.layer p{font-size:13.5px;color:var(--muted)}
+
+/* product rows */
+.prod-row{display:grid;grid-template-columns:120px 1.1fr 1.5fr 200px;gap:32px;padding:34px 0;border-top:1px solid #dededa;align-items:baseline}
+.prod-row:first-of-type{border-top:var(--hair)}
+.prod-row:last-of-type{border-bottom:var(--hair)}
+.prod-row .no{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.prod-row h3{font-size:1.5rem}
+.prod-row .desc{color:var(--muted);font-size:14.5px;max-width:52ch}
+.prod-row .cat{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--forest);text-align:right}
+.prod-row .flag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:var(--gold);color:var(--ink);padding:3px 8px;margin-left:10px;vertical-align:middle}
+
+/* research grid */
+.research-grid{display:grid;grid-template-columns:repeat(3,1fr);border:var(--hair);background:var(--white)}
+.research{padding:32px 30px;border-right:var(--hair);border-bottom:var(--hair)}
+.research:nth-child(3n){border-right:none}
+.research:nth-last-child(-n+3){border-bottom:none}
+.research .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--forest)}
+.research h3{font-size:1.1rem;margin:10px 0 8px}
+.research p{font-size:13.5px;color:var(--muted)}
+
+/* sectors */
+.sector-grid{display:grid;grid-template-columns:repeat(5,1fr);border:var(--hair);background:var(--white)}
+.sector{padding:26px 24px;border-right:var(--hair);border-bottom:var(--hair);font-family:var(--disp);font-weight:500;letter-spacing:-.01em;font-size:1.02rem}
+.sector:nth-child(5n){border-right:none}
+.sector:nth-last-child(-n+5){border-bottom:none}
+.sector span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;color:var(--muted);margin-bottom:8px}
+
+/* hubs */
+.hubs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:var(--hair);background:var(--white)}
+.hub{padding:44px 40px}
+.hub:first-child{border-right:var(--hair)}
+.hub .coords{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.hub h3{margin:14px 0 8px;font-size:1.8rem}
+.hub p{color:var(--muted);font-size:14.5px;max-width:42ch}
+
+/* big CTA */
+.cta-block{padding:110px 0;text-align:left}
+.cta-block h2{max-width:20ch;margin:22px 0 34px}
+
+/* services page */
+.svc-row{display:grid;grid-template-columns:90px 1fr 1.3fr;gap:36px;padding:44px 0;border-top:1px solid #dededa}
+.svc-row:first-of-type{border-top:var(--hair)}
+.svc-row:last-of-type{border-bottom:var(--hair)}
+.svc-row .no{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.14em}
+.svc-row h3{font-size:1.6rem;margin-bottom:10px}
+.svc-row .who{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--forest)}
+.svc-row p{color:var(--muted);font-size:14.5px}
+.svc-row ul{list-style:none;margin-top:14px}
+.svc-row li{font-size:13.5px;padding:8px 0;border-top:1px solid #e7e7e3;color:var(--ink);display:flex;gap:10px}
+.svc-row li::before{content:"·";color:var(--gold);font-weight:700}
+.svc-row .flag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:var(--gold);color:var(--ink);padding:3px 8px;margin-left:10px;vertical-align:middle}
+.engage-grid{display:grid;grid-template-columns:repeat(3,1fr);border:var(--hair);background:var(--white)}
+.engage{padding:36px 30px;border-right:var(--hair)}
+.engage:last-child{border-right:none}
+.engage .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.engage h3{margin:12px 0 10px}
+.engage p{font-size:13.5px;color:var(--muted)}
+
+/* about */
+.manifesto-intro p{font-family:var(--disp);font-size:clamp(1.3rem,2.6vw,2rem);letter-spacing:-.02em;line-height:1.35;max-width:34ch;font-weight:500}
+.manifesto-intro p+p{margin-top:28px}
+.article-row{display:grid;grid-template-columns:110px 300px 1fr;gap:32px;padding:30px 0;border-top:1px solid #dededa;align-items:baseline}
+.article-row:first-of-type{border-top:var(--hair)}
+.article-row:last-of-type{border-bottom:var(--hair)}
+.article-row .no{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.article-row h3{font-size:1.2rem}
+.article-row p{font-size:14px;color:var(--muted)}
+.principles{display:grid;grid-template-columns:repeat(2,1fr);border:var(--hair);background:var(--white)}
+.principle{padding:36px 34px;border-right:var(--hair);border-bottom:var(--hair)}
+.principle:nth-child(2n){border-right:none}
+.principle:nth-last-child(-n+2){border-bottom:none}
+.principle .no{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.14em}
+.principle h3{margin:12px 0 8px}
+.principle p{font-size:13.5px;color:var(--muted)}
+.stat-band{display:grid;grid-template-columns:repeat(3,1fr);border:var(--hair);background:var(--white)}
+.stat{padding:44px 36px;border-right:var(--hair)}
+.stat:last-child{border-right:none}
+.stat .v{font-family:var(--disp);font-weight:600;font-size:clamp(2.4rem,5vw,4rem);letter-spacing:-.03em}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:8px;display:block}
+
+/* careers */
+.role-row{display:grid;grid-template-columns:1.2fr .6fr .6fr 160px;gap:24px;padding:30px 0;border-top:1px solid #dededa;align-items:center}
+.role-row:first-of-type{border-top:var(--hair)}
+.role-row:last-of-type{border-bottom:var(--hair)}
+.role-row h3{font-size:1.3rem}
+.role-row .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.role-row .apply{justify-self:end}
+
+/* footer */
+footer{padding:64px 0 40px;background:var(--white);border-top:var(--hair)}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:56px}
+.foot-grid .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.foot-grid a,.foot-grid p.item{display:block;font-size:14px;padding:5px 0;color:var(--ink)}
+.foot-grid a:hover{color:var(--ember)}
+.foot-grid .addr{font-size:13px;color:var(--muted);line-height:1.55;padding:5px 0}
+.foot-tagline{font-family:var(--disp);font-size:clamp(2.4rem,6vw,4.6rem);letter-spacing:-.03em;font-weight:500;border-top:1px solid #e7e7e3;padding-top:40px}
+.foot-legal{display:flex;justify-content:space-between;margin-top:28px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap;gap:12px}
+
+/* research page */
+.chart-card{border:var(--hair);background:var(--white);padding:34px 30px;margin-bottom:0}
+.chart-card+.chart-card{border-top:none}
+.chart-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:6px;flex-wrap:wrap}
+.chart-head h3{font-size:1.2rem}
+.chart-head .unit{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.chart-sub{font-size:13.5px;color:var(--muted);max-width:64ch;margin-bottom:26px}
+.placeholder-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);margin-top:22px;display:flex;align-items:center;gap:8px}
+.placeholder-note::before{content:"▲";font-size:8px}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:26px}
+.legend span{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.legend i{width:12px;height:12px;display:inline-block;border:1px solid var(--line)}
+.sw-apolo{background:var(--ink)} .sw-frontier{background:var(--chrome)} .sw-oss{background:var(--gold)} .sw-casper{background:var(--forest)} .sw-base{background:var(--chrome)}
+/* vertical grouped bars */
+.vbars{display:flex;gap:8px;align-items:stretch;height:280px;border-bottom:var(--hair);position:relative}
+.vgroup{flex:1;display:flex;flex-direction:column;justify-content:flex-end}
+.vgroup .bars-inner{display:flex;gap:5px;align-items:flex-end;flex:1;padding:0 12%}
+.vbar{flex:1;border:1px solid var(--line);border-bottom:none;cursor:crosshair;transition:opacity .15s ease,transform .15s ease;min-width:10px}
+.vbar:hover{opacity:.75;transform:translateY(-3px)}
+.vbar.apolo{background:var(--ink)} .vbar.frontier{background:var(--chrome)} .vbar.oss{background:var(--gold)}
+.vbar.casper{background:var(--forest)} .vbar.base{background:var(--chrome)}
+.vlabels{display:flex;gap:8px;margin-top:12px}
+.vlabels span{flex:1;text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* horizontal bars */
+.hbar-row{display:grid;grid-template-columns:220px 1fr 70px;gap:18px;align-items:center;padding:13px 0;border-top:1px solid #e7e7e3}
+.hbar-row:first-of-type{border-top:none}
+.hbar-row .lbl{font-size:13.5px}
+.hbar-track{height:20px;background:var(--paper);border:1px solid #dededa;position:relative}
+.hbar-fill{height:100%;background:var(--ink);border-right:1px solid var(--line);cursor:crosshair;transition:background .15s ease}
+.hbar-fill:hover{background:var(--forest)}
+.hbar-row .val{font-family:var(--mono);font-size:12px;text-align:right}
+/* line chart */
+.linechart{width:100%;height:auto;display:block}
+.linechart .grid{stroke:#e7e7e3;stroke-width:1}
+.linechart .axis-lbl{font-family:'Space Mono',monospace;font-size:10px;fill:#6B6B6B;letter-spacing:.08em}
+.linechart .series{fill:none;stroke:#0B0B0B;stroke-width:2}
+.linechart .pt{fill:#F7F7F4;stroke:#0B0B0B;stroke-width:2;cursor:crosshair;transition:r .15s ease}
+.linechart .pt:hover{r:8;fill:#C8A45D}
+/* stat tiles */
+.tile-band{display:grid;grid-template-columns:repeat(4,1fr);border:var(--hair);background:var(--white)}
+.tile{padding:32px 28px;border-right:var(--hair);cursor:crosshair;transition:background .15s ease}
+.tile:last-child{border-right:none}
+.tile:hover{background:var(--paper)}
+.tile .v{font-family:var(--disp);font-weight:600;font-size:clamp(1.8rem,3.4vw,2.8rem);letter-spacing:-.03em}
+.tile .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px;display:block}
+/* tooltip */
+#tip{position:fixed;z-index:99;pointer-events:none;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:8px 12px;border:1px solid var(--line);opacity:0;transition:opacity .12s ease;max-width:260px;line-height:1.5}
+#tip b{color:var(--gold)}
+
+/* responsive */
+@media (max-width:960px){
+  .tile-band{grid-template-columns:1fr 1fr}
+  .tile:nth-child(2n){border-right:none}
+  .tile:nth-child(-n+2){border-bottom:var(--hair)}
+  .hbar-row{grid-template-columns:1fr 60px;gap:8px}
+  .hbar-row .lbl{grid-column:1/-1;padding-bottom:2px}
+  .hero-grid,.hubs,.principles{grid-template-columns:1fr}
+  .hub:first-child{border-right:none;border-bottom:var(--hair)}
+  .lines-grid,.stack-grid,.stack-grid.five{grid-template-columns:1fr 1fr}
+  .line-cell:nth-child(2n),.stack-cell:nth-child(2n){border-right:none}
+  .line-cell:nth-child(-n+2),.stack-cell:not(:nth-last-child(-n+2)){border-bottom:var(--hair)}
+  .research-grid{grid-template-columns:1fr 1fr}
+  .research:nth-child(3n){border-right:var(--hair)}
+  .research:nth-child(2n){border-right:none}
+  .sector-grid{grid-template-columns:1fr 1fr}
+  .sector:nth-child(5n){border-right:var(--hair)}
+  .sector:nth-child(2n){border-right:none}
+  .prod-row{grid-template-columns:60px 1fr;gap:10px 20px}
+  .prod-row .desc,.prod-row .cat{grid-column:2;text-align:left}
+  .svc-row{grid-template-columns:1fr;gap:16px}
+  .layer{grid-template-columns:70px 1fr;gap:8px 18px}
+  .layer p{grid-column:2}
+  .article-row{grid-template-columns:1fr;gap:8px}
+  .engage-grid,.stat-band{grid-template-columns:1fr}
+  .engage,.stat{border-right:none;border-bottom:var(--hair)}
+  .engage:last-child,.stat:last-child{border-bottom:none}
+  .role-row{grid-template-columns:1fr 1fr;gap:12px}
+  .role-row .apply{justify-self:start;grid-column:1/-1}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .principle{border-right:none}
+  .nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:var(--paper);flex-direction:column;align-items:stretch;border-bottom:var(--hair);padding:12px 24px 20px;gap:6px}
+  .nav-links.open{display:flex}
+  .burger{display:block}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#home" class="logo" data-page="home"><span class="dot"></span>RACO&nbsp;AI <sup>TECHNOLOGIES</sup></a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#home" data-page="home" class="active">Home</a>
+      <a href="#products" data-page="products">Lab &amp; Products</a>
+      <a href="#research" data-page="research">Research</a>
+      <a href="#services" data-page="services">Services</a>
+      <a href="#about" data-page="about">About</a>
+      <a href="#careers" data-page="careers">Careers</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="nav-cta" href="#contact">Talk to RACO</a>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="navLinks">Menu</button>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span><b>APOLO</b> — reasoning LLM <b class="ok">● ONLINE</b></span>
+    <span><b>CASPER</b> — voice model <b class="ok">● STREAMING</b></span>
+    <span><b>RACO-BEAST</b> — agent orchestration <b class="ok">● COORDINATING</b></span>
+    <span><b>AIVIT</b> — voice API <b class="ok">● SERVING</b></span>
+    <span><b>RACO</b> — workspace <b class="ok">● DEPLOYED</b></span>
+    <span><b>~300 PEOPLE</b> — Bristol / Dhaka <b class="amber">● 24H CYCLE</b></span>
+    <span><b>APPLIED RESEARCH</b> — SLM / vision / robotics <b class="amber">● IN MOTION</b></span>
+  </div>
+</div>
+
+<!-- ============================== HOME ============================== -->
+<main id="page-home" class="page visible">
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow"><span class="idx">RACO AI TECHNOLOGIES LTD</span> BRISTOL × DHAKA</p>
+      <h1>Your business clocks out at five. Your competition no longer <span class="chrome-word">does</span>.</h1>
+      <p class="lead">RACO builds AI agents with human authority — systems that answer, sell, process, and report around the clock. Built on models we train ourselves. Governed to European standards. Approved by you.</p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#contact">Let's build your advantage</a>
+        <a class="btn btn-ghost" href="#pain">See what staying manual costs</a>
+      </div>
+    </div>
+    <aside class="hero-meta" aria-label="What changes with RACO">
+      <div><span class="k">Your business runs</span><span class="v">24 / 7</span></div>
+      <div><span class="k">Agent authority</span><span class="v">You approve</span></div>
+      <div><span class="k">Compliance</span><span class="v">UK / EU</span></div>
+      <div><span class="k">The models</span><span class="v">Ours</span></div>
+    </aside>
+  </div>
+</section>
+
+<section class="section-pad" id="pain">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">01</span> The hidden tax</p>
+      <h2>Sound <span class="chrome-word">familiar</span>?</h2>
+      <p class="lead">None of this shows up as a line on your P&amp;L. All of it compounds — every quarter on manual operations widens the gap into permanent competitive disadvantage.</p>
+    </div>
+    <div class="research-grid">
+      <div class="research"><span class="k" style="color:var(--ember)">COST-01</span><h3>The 9pm enquiry</h3><p>A buyer messages you tonight. Your team answers at 10am. Your competitor's agent answered in forty seconds — and took the deal.</p></div>
+      <div class="research"><span class="k" style="color:var(--ember)">COST-02</span><h3>Slow execution</h3><p>Quotes, follow-ups, and reports queued behind busy humans. Every delay is revenue leaking through the calendar.</p></div>
+      <div class="research"><span class="k" style="color:var(--ember)">COST-03</span><h3>Flying blind</h3><p>Decisions made on last month's numbers because nobody has a live picture of the operation.</p></div>
+      <div class="research"><span class="k" style="color:var(--ember)">COST-04</span><h3>Wasted human capital</h3><p>Your best people — the ones you fought to hire — spending their days on data entry, chasing, and copy-paste admin.</p></div>
+      <div class="research"><span class="k" style="color:var(--ember)">COST-05</span><h3>The 5pm shutdown</h3><p>Sixteen hours a day of dead air. Your business simply stops existing while the market keeps moving.</p></div>
+      <div class="research"><span class="k" style="color:var(--ember)">COST-06</span><h3>Duct-taped systems</h3><p>Fragile integrations and disconnected tools — not just inefficiency, but risk you've learned to live with.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> A new kind of company</p>
+      <h2>We're not an agency that uses AI. We're the company that <span class="chrome-word">makes it</span>.</h2>
+      <p class="lead">The first and only company in Bangladesh building true AI models natively — creators of RACO, Bangladesh's first general-purpose AI app — now building the same class of systems for businesses like yours.</p>
+    </div>
+    <div class="stack-grid">
+      <article class="stack-cell">
+        <span class="code">PROOF-01</span>
+        <h3>We make the AI</h3>
+        <p>APOLO, CASPER, and RACO-BEAST are trained and owned in-house. When we build your systems, there's no wrapper, no third-party dependency, no compromise.</p>
+        <span class="role">Not a wrapper</span>
+      </article>
+      <article class="stack-cell">
+        <span class="code">PROOF-02</span>
+        <h3>European governance</h3>
+        <p>A UK company with compliance engineered in from day one. Privacy is non-negotiable — we build digital fortresses around your data.</p>
+        <span class="role">UK / EU compliant</span>
+      </article>
+      <article class="stack-cell">
+        <span class="code">PROOF-03</span>
+        <h3>Human authority</h3>
+        <p>Agents execute; you command. Every consequential action passes an approval gate you define. Automation with a chain of command.</p>
+        <span class="role">You stay in control</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">03</span> The engine</p>
+      <h2>Built in-house. Not <span class="chrome-word">wrapped</span>.</h2>
+      <p class="lead">Every system we deploy for you runs on models we trained, systems we architected, and infrastructure we own — end to end.</p>
+    </div>
+    <div class="stack-grid">
+      <article class="stack-cell">
+        <span class="code">LLM</span>
+        <h3>APOLO</h3>
+        <p>Our proprietary large language model. Purpose-built for enterprise reasoning, document understanding, and intelligent task execution.</p>
+        <span class="role">The Brain</span>
+      </article>
+      <article class="stack-cell">
+        <span class="code">Voice model</span>
+        <h3>CASPER</h3>
+        <p>Our proprietary voice AI. Natural speech synthesis and understanding for real-time conversational interfaces.</p>
+        <span class="role">The Voice</span>
+      </article>
+      <article class="stack-cell">
+        <span class="code">Agentic orchestration</span>
+        <h3>RACO-BEAST</h3>
+        <p>Our intelligent agent orchestration system. Coordinates multi-agent workflows, tool use, and autonomous decision-making at scale.</p>
+        <span class="role">The Hands</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">04</span> What changes</p>
+      <h2>Your business, after RACO.</h2>
+    </div>
+    <div class="tile-band">
+      <div class="tile" data-tip="<b>Around the clock</b><br>Agents answer, qualify, and execute while your team sleeps."><span class="v">24/7</span><span class="k">Never clocks out</span></div>
+      <div class="tile" data-tip="<b>Every enquiry answered</b><br>Captured, qualified, followed up — in seconds, not mornings."><span class="v">0</span><span class="k">Leads left waiting</span></div>
+      <div class="tile" data-tip="<b>Live visibility</b><br>A real-time picture of operations. No more deciding blind."><span class="v">Live</span><span class="k">Operational visibility</span></div>
+      <div class="tile" data-tip="<b>Human capital maximized</b><br>Your people on judgement and relationships — agents on the repetitive work."><span class="v">100%</span><span class="k">Of talent on real work</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">05</span> The architecture</p>
+      <h2>The Intelligent Business <span class="chrome-word">Operating Layer</span>.</h2>
+      <p class="lead">We don't sell chatbots, voice models, or automations individually. We configure an eight-layer operating system around your business — bespoke, every time.</p>
+    </div>
+    <div class="layer-stack">
+      <div class="layer"><span class="code">L-08</span><h3>Analytics Layer</h3><p>Measures operational outcomes, performance metrics, and ROI.</p></div>
+      <div class="layer"><span class="code">L-07</span><h3>Application Layer</h3><p>Custom web and mobile interfaces for human-AI interaction.</p></div>
+      <div class="layer"><span class="code">L-06</span><h3>Integration Layer</h3><p>Connects seamlessly with existing business systems and databases.</p></div>
+      <div class="layer"><span class="code">L-05</span><h3>Automation Layer</h3><p>Executes strict logical actions and workflow steps across systems.</p></div>
+      <div class="layer"><span class="code">L-04</span><h3>Orchestration Layer</h3><p>Coordinates multiple autonomous agents and complex workflows.</p></div>
+      <div class="layer"><span class="code">L-03</span><h3>Agent Layer</h3><p>Specialized AI workers dedicated to discrete business functions.</p></div>
+      <div class="layer"><span class="code">L-02</span><h3>Voice Layer</h3><p>Enabling human-like, real-time conversational capabilities.</p></div>
+      <div class="layer"><span class="code">L-01</span><h3>Reasoning Layer</h3><p>Powered by advanced LLMs to process, understand, and decide.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">06</span> Four core business lines</p>
+      <h2>How we deliver it.</h2>
+    </div>
+    <div class="lines-grid">
+      <article class="line-cell"><span class="no">01</span><h3>AI Consulting &amp; Transformation</h3><p>Strategy, opportunity discovery, ROI roadmaps, and enterprise adoption planning.</p></article>
+      <article class="line-cell"><span class="no">02</span><h3>AI Engineering</h3><p>Custom AI systems, autonomous AI agents, voice AI solutions, and intelligent automation.</p></article>
+      <article class="line-cell"><span class="no">03</span><h3>Software Engineering</h3><p>Custom web applications, SaaS products, mobile apps, APIs, and enterprise integrations.</p></article>
+      <article class="line-cell"><span class="no">04</span><h3>Managed AI Services</h3><p>Ongoing optimization, system monitoring, governance, and continuous model improvement.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">07</span> Industry solutions</p>
+      <h2>Whatever your sector, the gap is the same.</h2>
+      <p class="lead">The businesses that win yours will be the ones whose systems never sleep. We make sure that's you.</p>
+    </div>
+    <div class="sector-grid">
+      <div class="sector"><span>IND-01</span>Healthcare</div>
+      <div class="sector"><span>IND-02</span>Legal</div>
+      <div class="sector"><span>IND-03</span>Real Estate</div>
+      <div class="sector"><span>IND-04</span>Manufacturing</div>
+      <div class="sector"><span>IND-05</span>Retail</div>
+      <div class="sector"><span>IND-06</span>Logistics</div>
+      <div class="sector"><span>IND-07</span>Hospitality</div>
+      <div class="sector"><span>IND-08</span>Education</div>
+      <div class="sector"><span>IND-09</span>Construction</div>
+      <div class="sector"><span>IND-10</span>Financial Services</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">08</span> Selective clients</p>
+      <h2>You don't get a vendor. You get a technology partner with skin in the game.</h2>
+      <p class="lead">We take on a deliberately limited number of clients — because exceptional delivery demands focus. Every engagement is long-term, high-touch, and built for compounding returns.</p>
+    </div>
+    <div class="hubs">
+      <div class="hub">
+        <span class="coords">HUB-01 · Strategy &amp; Sales</span>
+        <h3>Bristol, UK</h3>
+        <p>Beacon Tower — Bristol City Center, DeskLodge, Colston St, Bristol BS1 4XE.</p>
+      </div>
+      <div class="hub">
+        <span class="coords">HUB-02 · Engineering &amp; R&amp;D</span>
+        <h3>Dhaka, BD</h3>
+        <p>House-40, Shahajalal Ave, Dhaka — model training, product engineering, and applied research.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block" id="contact">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">09</span> The next move is yours</p>
+    <h2>Every day manual is a day your competitors are <span class="chrome-word">pulling ahead</span>.</h2>
+    <p class="lead" style="margin-bottom:34px">Tell us where your business bleeds time and money. We'll show you the system that stops it — and what it earns you back.</p>
+    <div class="hero-actions">
+      <a class="btn btn-solid" href="mailto:hello@racoai.io">Let's build your advantage</a>
+      <a class="btn btn-ghost" href="#services" data-page="services">See the services catalog</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== LAB & PRODUCTS ============================== -->
+<main id="page-products" class="page">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">THE LAB</span> Proprietary technology &amp; products</p>
+    <h1>Intelligence beyond the <span class="chrome-word">chat window</span>.</h1>
+    <p class="lead" style="margin-top:26px">Language models are only the beginning. Our Lab trains a family of in-house models built for the physical and operational world — and ships them as products.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">01</span> Core technology</p>
+      <h2>The brain, the voice, the hands.</h2>
+    </div>
+    <div class="prod-row">
+      <span class="no">MDL-01</span>
+      <h3>APOLO</h3>
+      <p class="desc">Proprietary LLM purpose-built for enterprise reasoning, emotional intelligence, document understanding, and intelligent task execution.</p>
+      <span class="cat">Reasoning LLM</span>
+    </div>
+    <div class="prod-row">
+      <span class="no">MDL-02</span>
+      <h3>CASPER</h3>
+      <p class="desc">Proprietary voice AI — natural speech synthesis and understanding for real-time conversational interfaces. Powers AIVIT and our Voice AI Solutions line.</p>
+      <span class="cat">Voice model</span>
+    </div>
+    <div class="prod-row">
+      <span class="no">SYS-01</span>
+      <h3>RACO-BEAST</h3>
+      <p class="desc">Intelligent agent orchestration system coordinating multi-agent workflows, tool use, and autonomous decision-making at scale.</p>
+      <span class="cat">Agentic orchestration</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> Flagship products</p>
+      <h2>Deployed across three continents.</h2>
+    </div>
+    <div class="prod-row">
+      <span class="no">APP-01</span>
+      <h3>RACO<span class="flag">Flagship</span></h3>
+      <p class="desc">Our flagship SaaS workspace for workflow orchestration — agentic assistant, projects, tasks, editable memory, and custom skills. Desktop &amp; mobile.</p>
+      <span class="cat">The Workspace</span>
+    </div>
+    <div class="prod-row">
+      <span class="no">APP-02</span>
+      <h3>AIVIT</h3>
+      <p class="desc">High-fidelity voice API — our direct competitor to ElevenLabs. Text-to-speech, transcription, and real-time voice agents, built on CASPER.</p>
+      <span class="cat">The Voice SaaS</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">03</span> Applied model research</p>
+      <h2>Always in <span class="chrome-word">motion</span>.</h2>
+      <p class="lead">Compact, efficient, purpose-built models for environments where general-purpose AI falls short. Every model and architecture is a living system — continuously trained, evaluated, and improved as the frontier moves.</p>
+    </div>
+    <div class="research-grid">
+      <div class="research"><span class="k">Small Language Models</span><h3>Niche SLMs</h3><p>Compact, domain-tuned language models for specialized verticals — fast, private, deployable on-premise or at the edge.</p></div>
+      <div class="research"><span class="k">Embodied Intelligence</span><h3>Real-World Models for Robotics &amp; Vehicles</h3><p>Perception, spatial reasoning, and control research for the next generation of robotics and automotive systems.</p></div>
+      <div class="research"><span class="k">Computer Vision</span><h3>Smart Camera Vision</h3><p>Real-time detection, tracking, and scene understanding for security, retail analytics, and industrial monitoring.</p></div>
+      <div class="research"><span class="k">Autonomy &amp; Logistics</span><h3>Drone &amp; Smart Routing Models</h3><p>Navigation and optimization models for aerial systems and logistics — routing that adapts in real time.</p></div>
+      <div class="research"><span class="k">Consumer Intelligence</span><h3>Lifestyle Tech Models</h3><p>Personal, adaptive models for wearables, connected living, and daily routines.</p></div>
+      <div class="research"><span class="k">Agentic Intelligence</span><h3>Agentic Architectures</h3><p>Multi-agent coordination, tool use, planning, and memory — the architectures that let AI act, not just answer.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">04</span> Access</p>
+    <h2>Private AI, trained on your company's data.</h2>
+    <p class="lead" style="margin-bottom:34px">Per-seat plans with custom intelligence — on-premise or cloud, with privacy held as non-negotiable.</p>
+    <a class="btn btn-solid" href="mailto:hello@racoai.io">Request access</a>
+  </div>
+</section>
+</main>
+
+<!-- ============================== RESEARCH ============================== -->
+<main id="page-research" class="page">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">RESEARCH</span> Model &amp; agent evaluations</p>
+    <h1>Measured, not <span class="chrome-word">marketed</span>.</h1>
+    <p class="lead" style="margin-top:26px">Performance data from our internal evaluation harness across APOLO, CASPER, and RACO-BEAST. Every model is a living system — continuously trained, evaluated, and improved as the frontier moves.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">01</span> APOLO — Language model evaluations</p>
+      <h2>Built for the enterprise. Benchmarked against the frontier.</h2>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head"><h3>Benchmark suite comparison</h3><span class="unit">Score / 100 · higher is better</span></div>
+      <p class="chart-sub">APOLO 1.1 against a frontier-model average and an open-source 70B-class baseline, across our four enterprise evaluation suites. APOLO is trained with an explicit focus on emotional intelligence and human understanding — the EQ suite is where that shows.</p>
+      <div class="legend">
+        <span><i class="sw-apolo"></i>APOLO 1.1</span>
+        <span><i class="sw-frontier"></i>Frontier avg</span>
+        <span><i class="sw-oss"></i>OSS 70B class</span>
+      </div>
+      <div class="vbars">
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar apolo" style="height:78.4%" data-tip="<b>APOLO 1.1</b><br>Enterprise Reasoning: 78.4<br>5-run median, temp 0"></div>
+            <div class="vbar frontier" style="height:82.1%" data-tip="<b>Frontier avg</b><br>Enterprise Reasoning: 82.1"></div>
+            <div class="vbar oss" style="height:64.3%" data-tip="<b>OSS 70B class</b><br>Enterprise Reasoning: 64.3"></div>
+          </div>
+        </div>
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar apolo" style="height:88.2%" data-tip="<b>APOLO 1.1</b><br>Emotional Intelligence: 88.2<br>Our differentiating suite"></div>
+            <div class="vbar frontier" style="height:81.5%" data-tip="<b>Frontier avg</b><br>Emotional Intelligence: 81.5"></div>
+            <div class="vbar oss" style="height:66.9%" data-tip="<b>OSS 70B class</b><br>Emotional Intelligence: 66.9"></div>
+          </div>
+        </div>
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar apolo" style="height:84.6%" data-tip="<b>APOLO 1.1</b><br>Document Understanding: 84.6"></div>
+            <div class="vbar frontier" style="height:85.0%" data-tip="<b>Frontier avg</b><br>Document Understanding: 85.0"></div>
+            <div class="vbar oss" style="height:71.2%" data-tip="<b>OSS 70B class</b><br>Document Understanding: 71.2"></div>
+          </div>
+        </div>
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar apolo" style="height:86.1%" data-tip="<b>APOLO 1.1</b><br>Instruction Following: 86.1"></div>
+            <div class="vbar frontier" style="height:88.4%" data-tip="<b>Frontier avg</b><br>Instruction Following: 88.4"></div>
+            <div class="vbar oss" style="height:74.8%" data-tip="<b>OSS 70B class</b><br>Instruction Following: 74.8"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vlabels">
+        <span>Enterprise Reasoning</span><span>Emotional Intelligence</span><span>Document Understanding</span><span>Instruction Following</span>
+      </div>
+      <p class="placeholder-note">Illustrative placeholder data — pending internal eval publication</p>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head"><h3>Composite eval index across APOLO versions</h3><span class="unit">Index / 100 · internal harness</span></div>
+      <p class="chart-sub">Aggregate performance across all four suites, tracked per release. Hover the points for release detail.</p>
+      <svg class="linechart" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="APOLO composite eval index by version">
+        <line class="grid" x1="50" y1="20" x2="620" y2="20"/><text class="axis-lbl" x="14" y="24">100</text>
+        <line class="grid" x1="50" y1="70" x2="620" y2="70"/><text class="axis-lbl" x="22" y="74">75</text>
+        <line class="grid" x1="50" y1="120" x2="620" y2="120"/><text class="axis-lbl" x="22" y="124">50</text>
+        <line class="grid" x1="50" y1="170" x2="620" y2="170"/><text class="axis-lbl" x="22" y="174">25</text>
+        <line class="grid" x1="50" y1="220" x2="620" y2="220"/><text class="axis-lbl" x="30" y="224">0</text>
+        <polyline class="series" points="120,98 280,84 440,68 600,52"/>
+        <circle class="pt" cx="120" cy="98" r="6" data-tip="<b>APOLO 0.8</b><br>Composite index: 61.0<br>Q3 2025"/>
+        <circle class="pt" cx="280" cy="84" r="6" data-tip="<b>APOLO 0.9</b><br>Composite index: 68.0<br>Q4 2025"/>
+        <circle class="pt" cx="440" cy="68" r="6" data-tip="<b>APOLO 1.0</b><br>Composite index: 76.0<br>Q1 2026"/>
+        <circle class="pt" cx="600" cy="52" r="6" data-tip="<b>APOLO 1.1</b><br>Composite index: 84.0<br>Q2 2026 — current"/>
+        <text class="axis-lbl" x="106" y="242">v0.8</text>
+        <text class="axis-lbl" x="266" y="242">v0.9</text>
+        <text class="axis-lbl" x="426" y="242">v1.0</text>
+        <text class="axis-lbl" x="586" y="242">v1.1</text>
+      </svg>
+      <p class="placeholder-note">Illustrative placeholder data — pending internal eval publication</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> CASPER — Voice model evaluations</p>
+      <h2>Heard, understood, answered — in real time.</h2>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head"><h3>Speech recognition — word error rate</h3><span class="unit">WER % · lower is better</span></div>
+      <p class="chart-sub">CASPER STT against a leading open-source transcription baseline across three audio conditions.</p>
+      <div class="legend">
+        <span><i class="sw-casper"></i>CASPER</span>
+        <span><i class="sw-base"></i>OSS baseline</span>
+      </div>
+      <div class="vbars" style="height:220px">
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar casper" style="height:28%" data-tip="<b>CASPER</b><br>Clean audio WER: 4.2%"></div>
+            <div class="vbar base" style="height:34%" data-tip="<b>OSS baseline</b><br>Clean audio WER: 5.1%"></div>
+          </div>
+        </div>
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar casper" style="height:58%" data-tip="<b>CASPER</b><br>Noisy audio WER: 8.7%"></div>
+            <div class="vbar base" style="height:69%" data-tip="<b>OSS baseline</b><br>Noisy audio WER: 10.4%"></div>
+          </div>
+        </div>
+        <div class="vgroup">
+          <div class="bars-inner">
+            <div class="vbar casper" style="height:46%" data-tip="<b>CASPER</b><br>Accented speech WER: 6.9%<br>incl. South Asian English"></div>
+            <div class="vbar base" style="height:59%" data-tip="<b>OSS baseline</b><br>Accented speech WER: 8.8%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vlabels"><span>Clean</span><span>Noisy</span><span>Accented</span></div>
+      <p class="placeholder-note">Illustrative placeholder data — pending internal eval publication</p>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head"><h3>Speech synthesis — key metrics</h3><span class="unit">Hover for method</span></div>
+      <div class="tile-band" style="border:none;border-top:1px solid #e7e7e3">
+        <div class="tile" data-tip="<b>Time to first byte</b><br>p50, streaming synthesis<br>UK region endpoint"><span class="v">320<span style="font-size:.45em">ms</span></span><span class="k">TTFB · p50</span></div>
+        <div class="tile" data-tip="<b>Mean Opinion Score</b><br>Naturalness, 1–5 scale<br>Blind panel, n=placeholder"><span class="v">4.31</span><span class="k">MOS naturalness</span></div>
+        <div class="tile" data-tip="<b>Real-time factor</b><br>Synthesis speed vs audio length<br>Lower is faster"><span class="v">0.18</span><span class="k">Real-time factor</span></div>
+        <div class="tile" data-tip="<b>Full-duplex</b><br>Simultaneous STT + TTS<br>for live conversation"><span class="v">Duplex</span><span class="k">Conversation mode</span></div>
+      </div>
+      <p class="placeholder-note">Illustrative placeholder data — pending internal eval publication</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">03</span> RACO-BEAST — Agent evaluations</p>
+      <h2>Architectures that act, not just answer.</h2>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head"><h3>End-to-end task completion by workflow category</h3><span class="unit">Completion % · human-verified</span></div>
+      <p class="chart-sub">Multi-step business workflows executed by RACO-BEAST-orchestrated agents in production-mirror environments, with human-in-the-loop approval gates. Hover a bar for run detail.</p>
+      <div class="hbar-row"><span class="lbl">Scheduling &amp; calendar ops</span><div class="hbar-track"><div class="hbar-fill" style="width:96.5%" data-tip="<b>Scheduling</b><br>96.5% completion<br>n = placeholder runs"></div></div><span class="val">96.5</span></div>
+      <div class="hbar-row"><span class="lbl">Lead qualification</span><div class="hbar-track"><div class="hbar-fill" style="width:94.2%" data-tip="<b>Lead qualification</b><br>94.2% completion<br>n = placeholder runs"></div></div><span class="val">94.2</span></div>
+      <div class="hbar-row"><span class="lbl">Report generation</span><div class="hbar-track"><div class="hbar-fill" style="width:92.7%" data-tip="<b>Report generation</b><br>92.7% completion<br>n = placeholder runs"></div></div><span class="val">92.7</span></div>
+      <div class="hbar-row"><span class="lbl">Invoice processing</span><div class="hbar-track"><div class="hbar-fill" style="width:91.8%" data-tip="<b>Invoice processing</b><br>91.8% completion<br>n = placeholder runs"></div></div><span class="val">91.8</span></div>
+      <div class="hbar-row"><span class="lbl">Support triage</span><div class="hbar-track"><div class="hbar-fill" style="width:89.3%" data-tip="<b>Support triage</b><br>89.3% completion<br>n = placeholder runs"></div></div><span class="val">89.3</span></div>
+      <p class="placeholder-note">Illustrative placeholder data — pending internal eval publication</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">04</span> Methodology</p>
+      <h2>How we evaluate.</h2>
+    </div>
+    <div class="principles">
+      <div class="principle"><span class="no">M-01</span><h3>Reproducible harness</h3><p>All language evals run at temperature 0, 5-run median, fixed prompts, versioned datasets. Agent evals run in production-mirror sandboxes.</p></div>
+      <div class="principle"><span class="no">M-02</span><h3>Human verification</h3><p>Agent task completion is human-verified, not self-reported. A task counts as complete only when the output passes the same review a client would apply.</p></div>
+      <div class="principle"><span class="no">M-03</span><h3>Honest baselines</h3><p>We benchmark against the strongest available frontier and open-source baselines at time of evaluation, and we publish where we lose, not just where we win.</p></div>
+      <div class="principle"><span class="no">M-04</span><h3>Living systems</h3><p>None of this stands still. Every model and architecture is continuously trained, evaluated, and improved as the frontier moves.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">05</span> Collaborate</p>
+    <h2>Research partnerships and eval access.</h2>
+    <p class="lead" style="margin-bottom:34px">Working on agentic architectures, voice, or applied SLMs? Our Lab collaborates with researchers and enterprise partners.</p>
+    <a class="btn btn-solid" href="mailto:hello@racoai.io?subject=Research">Contact the Lab</a>
+  </div>
+</section>
+</main>
+
+<!-- ============================== SERVICES ============================== -->
+<main id="page-services" class="page">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">SERVICES</span> The full catalog</p>
+    <h1>Business transformation through <span class="chrome-word">intelligent</span> systems.</h1>
+    <p class="lead" style="margin-top:26px">You're not buying chatbots. You're buying back every hour your team loses to manual work, every lead that goes cold overnight, and every decision made blind — twelve services, one proprietary engine behind every project.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">01</span> Services catalog</p>
+      <h2>Twelve ways in.</h2>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">01</span>
+      <div><h3>AI Transformation<span class="flag">Flagship</span></h3><span class="who">Premium offering</span></div>
+      <div><p>We don't just build chatbots — we redesign how your company operates using AI.</p>
+        <ul><li>AI strategy &amp; opportunity assessment</li><li>Process redesign &amp; ROI forecasting</li><li>Strategy document, roadmap &amp; executive workshops</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">02</span>
+      <div><h3>Custom AI Systems</h3><span class="who">Where our stack shines</span></div>
+      <div><p>Completely bespoke AI systems built on your internal data.</p>
+        <ul><li>AI copilots &amp; internal knowledge assistants</li><li>Industry-specific assistants — legal, healthcare, finance, HR, procurement, manufacturing</li><li>Powered by LLMs, RAG, knowledge bases &amp; APIs</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">03</span>
+      <div><h3>AI Agent Development</h3><span class="who">Entire AI workforces</span></div>
+      <div><p>Deploying AI workforces, not isolated single agents.</p>
+        <ul><li>Sales — SDR agents, lead qualification, proposal generation</li><li>Marketing — content, SEO, campaign management</li><li>HR, finance, operations &amp; support agents</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">04</span>
+      <div><h3>Voice AI Solutions</h3><span class="who">On proprietary voice models</span></div>
+      <div><p>A specialized offering leveraging CASPER, our advanced proprietary voice model.</p>
+        <ul><li>AI receptionists &amp; call-center automation</li><li>Appointment booking &amp; sales callers</li><li>Support, follow-up &amp; outbound campaigns</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">05</span>
+      <div><h3>Intelligent Automation</h3><span class="who">Deep workflow engineering</span></div>
+      <div><p>Beyond conversational AI into workflow execution.</p>
+        <ul><li>CRM &amp; document automation</li><li>Email &amp; approval workflows</li><li>Finance/HR processes &amp; ERP synchronization</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">06</span>
+      <div><h3>Custom Software Development</h3><span class="who">Dedicated division</span></div>
+      <div><p>Many clients need robust software before they can fully leverage AI.</p>
+        <ul><li>Web applications &amp; SaaS platforms</li><li>Dashboards, client portals &amp; mobile apps</li><li>Cloud infrastructure &amp; APIs — all built AI-ready</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">07</span>
+      <div><h3>AI Product Development</h3><span class="who">For startups &amp; innovators</span></div>
+      <div><p>Your dedicated AI engineering team — we build the AI products you take to market.</p>
+        <ul><li>AI-native SaaS &amp; marketplaces</li><li>AI CRMs &amp; healthcare systems</li><li>Education &amp; fintech platforms</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">08</span>
+      <div><h3>Enterprise Integrations</h3><span class="who">Connect the AI layer</span></div>
+      <div><p>Across your entire software ecosystem.</p>
+        <ul><li>Salesforce, SAP &amp; Oracle</li><li>Microsoft 365 &amp; Google Workspace</li><li>Slack, Teams &amp; HubSpot</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">09</span>
+      <div><h3>AI Operations (Managed AI)</h3><span class="who">Recurring partnership</span></div>
+      <div><p>After deployment, we stay involved as your Managed AI provider.</p>
+        <ul><li>Monitoring, updates &amp; security</li><li>Prompt &amp; agent improvements</li><li>Cost optimization &amp; new features</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">10</span>
+      <div><h3>AI Training &amp; Enablement</h3><span class="who">Adoption, not just purchase</span></div>
+      <div><p>Bridging the gap between buying AI and using it effectively.</p>
+        <ul><li>Executive workshops &amp; team training</li><li>Governance &amp; compliance frameworks</li><li>Prompt engineering &amp; documentation</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">11</span>
+      <div><h3>Research &amp; Innovation Lab</h3><span class="who">Innovation partner</span></div>
+      <div><p>Prototyping emerging AI for unprecedented problems.</p>
+        <ul><li>Computer vision &amp; robotics integration</li><li>Digital humans &amp; multi-agent systems</li><li>Predictive AI &amp; autonomous workflows</li></ul></div>
+    </div>
+
+    <div class="svc-row">
+      <span class="no">12</span>
+      <div><h3>Industry Solutions</h3><span class="who">Tailored by sector</span></div>
+      <div><p>Marketing by sector rather than by technology.</p>
+        <ul><li>Healthcare, legal &amp; real estate</li><li>Manufacturing, retail &amp; logistics</li><li>Hospitality, education, construction &amp; financial services</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> How engagements run</p>
+      <h2>Long-term. High-touch. Compounding.</h2>
+    </div>
+    <div class="engage-grid">
+      <div class="engage"><span class="k">ENG-01</span><h3>Transform</h3><p>Start with AI Transformation — strategy, opportunity assessment, and a roadmap with forecast ROI.</p></div>
+      <div class="engage"><span class="k">ENG-02</span><h3>Build</h3><p>AI Engineering and Software Engineering deliver the systems — agents, automations, voice, and custom software.</p></div>
+      <div class="engage"><span class="k">ENG-03</span><h3>Operate</h3><p>Managed AI keeps it improving — monitoring, governance, optimization, and continuous model improvement.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">03</span> Start</p>
+    <h2>Every quarter on legacy systems widens the gap.</h2>
+    <div class="hero-actions">
+      <a class="btn btn-solid" href="mailto:hello@racoai.io">Let's build your advantage</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== ABOUT ============================== -->
+<main id="page-about" class="page">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">ABOUT</span> RACO AI Technologies Ltd</p>
+    <h1>Solving hard problems.<br>Making <span class="chrome-word">cool stuff</span>.</h1>
+    <p class="lead" style="margin-top:26px">A Bristol-based intelligence technology company operating at the convergence of artificial intelligence, software engineering, and digital transformation — with engineering roots in Dhaka, Bangladesh.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="stat-band">
+      <div class="stat"><span class="v">~300</span><span class="k">People globally — and growing</span></div>
+      <div class="stat"><span class="v">Decades</span><span class="k">Combined software &amp; AI engineering experience</span></div>
+      <div class="stat"><span class="v">2 Hubs</span><span class="k">Bristol, United Kingdom &amp; Dhaka, Bangladesh</span></div>
+    </div>
+    <p style="margin-top:28px;font-size:14px;color:var(--muted);max-width:70ch">Our strength is our people. Senior developers and AI technicians with decades of real software experience, paired with young, driven minds — a combination that keeps our engineering rigorous and our thinking fresh.</p>
+  </div>
+</section>
+
+<section class="section-pad manifesto-intro">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:40px"><span class="idx">01</span> Mission</p>
+    <p>We are not the perfect squares that fit neatly into the grid; we are the erratic, sharp triangles that disrupt the pattern.</p>
+    <p style="color:var(--muted)">The first and only company in Bangladesh building true AI models natively — from the ground up.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> Manifesto &amp; Constitution</p>
+      <h2>Seven articles.</h2>
+    </div>
+    <div class="article-row"><span class="no">ART-01</span><h3>The Misfits</h3><p>RACO exists for the misfits — the bold who reject mediocrity and reshape the geometric landscape.</p></div>
+    <div class="article-row"><span class="no">ART-02</span><h3>The Starting Limit</h3><p>Our starting limit is where others drag the line — pushing beyond current boundaries through obsessive dedication.</p></div>
+    <div class="article-row"><span class="no">ART-03</span><h3>Flawless Execution</h3><p>Obsessed with perfectionism — delivering flawless execution in advanced technology, every time.</p></div>
+    <div class="article-row"><span class="no">ART-04</span><h3>Human Multiplication</h3><p>We challenge the belief that AI makes humans obsolete — technological leaps should multiply opportunity and sustain employment.</p></div>
+    <div class="article-row"><span class="no">ART-05</span><h3>Non-Negotiable Privacy</h3><p>We build digital fortresses to protect data with the same relentless focus we apply to innovation.</p></div>
+    <div class="article-row"><span class="no">ART-06</span><h3>The Epicenter</h3><p>We rise from the heart of Bangladesh as the nation's first true AI revolution — turning our homeland into the epicenter of intelligent disruption.</p></div>
+    <div class="article-row"><span class="no">ART-07</span><h3>Relentless Research &amp; Agentic Intelligence</h3><p>Continuously advancing agentic intelligence — fully autonomous, goal-oriented systems that turn the unknown into intelligent reality.</p></div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">03</span> Footprint</p>
+      <h2>Dual-hub by design.</h2>
+    </div>
+    <div class="hubs">
+      <div class="hub">
+        <span class="coords">HUB-01 · Strategy &amp; Sales</span>
+        <h3>Bristol, United Kingdom</h3>
+        <p>Beacon Tower — Bristol City Center, DeskLodge, Colston St, Bristol BS1 4XE. Client partnerships, enterprise engagement, European compliance.</p>
+      </div>
+      <div class="hub">
+        <span class="coords">HUB-02 · Engineering &amp; R&amp;D</span>
+        <h3>Dhaka, Bangladesh</h3>
+        <p>House-40, Shahajalal Ave, Dhaka. Model training, product engineering, and applied model research.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">04</span> Contact</p>
+    <h2>Building something serious? So are we.</h2>
+    <div class="hero-actions">
+      <a class="btn btn-solid" href="mailto:hello@racoai.io">Get in touch</a>
+      <a class="btn btn-ghost" href="#careers" data-page="careers">Join the team</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== CAREERS ============================== -->
+<main id="page-careers" class="page">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">CAREERS</span> Join the misfits</p>
+    <h1>Do the work of a <span class="chrome-word">hundred</span>.</h1>
+    <p class="lead" style="margin-top:26px">~300 people across two continents, united by one purpose: solving hard problems and making cool stuff. We hire people who want their fingerprints on the foundation.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">01</span> Open roles</p>
+      <h2>Currently hiring.</h2>
+    </div>
+    <div class="role-row">
+      <h3>Founding Account Executive</h3>
+      <span class="meta">Bristol / Hybrid</span>
+      <span class="meta">Sales · Full-time</span>
+      <a class="btn btn-ghost apply" href="mailto:hello@racoai.io?subject=Founding%20AE">Apply</a>
+    </div>
+    <div class="role-row">
+      <h3>AI Engineer — Agents &amp; Orchestration</h3>
+      <span class="meta">Dhaka / On-site</span>
+      <span class="meta">Engineering · Full-time</span>
+      <a class="btn btn-ghost apply" href="mailto:hello@racoai.io?subject=AI%20Engineer">Apply</a>
+    </div>
+    <div class="role-row">
+      <h3>Voice ML Engineer — CASPER</h3>
+      <span class="meta">Dhaka / On-site</span>
+      <span class="meta">Research · Full-time</span>
+      <a class="btn btn-ghost apply" href="mailto:hello@racoai.io?subject=Voice%20ML%20Engineer">Apply</a>
+    </div>
+    <div class="role-row">
+      <h3>Product Designer</h3>
+      <span class="meta">Remote / Any hub</span>
+      <span class="meta">Design · Contract</span>
+      <a class="btn btn-ghost apply" href="mailto:hello@racoai.io?subject=Product%20Designer">Apply</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><span class="idx">02</span> Why RACO</p>
+      <h2>What you get here.</h2>
+    </div>
+    <div class="principles">
+      <div class="principle"><span class="no">W-01</span><h3>Real models, real stakes</h3><p>Work on APOLO, CASPER, and RACO-BEAST — not prompt-wrapping. Your work ships in live products across three continents.</p></div>
+      <div class="principle"><span class="no">W-02</span><h3>Founding-team leverage</h3><p>Early enough that your decisions become the company's defaults.</p></div>
+      <div class="principle"><span class="no">W-03</span><h3>Two-continent rhythm</h3><p>Bristol strategy, Dhaka engineering. The sun never sets on the build.</p></div>
+      <div class="principle"><span class="no">W-04</span><h3>A national mission</h3><p>Help build Bangladesh's first true AI revolution. That's a career-defining line.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">03</span> Apply</p>
+    <h2>Don't see your role? Convince us we need it.</h2>
+    <a class="btn btn-solid" href="mailto:hello@racoai.io?subject=Open%20application">Send an open application</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="k">RACO AI Technologies Ltd</p>
+        <p style="font-size:14px;color:var(--muted);max-width:34ch">Digitally transforming businesses with Custom Software and Private AI.</p>
+      </div>
+      <div>
+        <p class="k">Company</p>
+        <a href="#about" data-page="about">About</a>
+        <a href="#careers" data-page="careers">Careers</a>
+        <a href="#products" data-page="products">Lab &amp; Products</a>
+        <a href="#research" data-page="research">Research</a>
+        <a href="#services" data-page="services">Services</a>
+      </div>
+      <div>
+        <p class="k">Bristol — HQ</p>
+        <p class="addr">Beacon Tower, Bristol City Center<br>DeskLodge, Colston St<br>Bristol BS1 4XE</p>
+        <a href="tel:+447405528294">+44 7405 528294</a>
+      </div>
+      <div>
+        <p class="k">Dhaka — Engineering</p>
+        <p class="addr">House-40, Shahajalal Ave<br>Dhaka, Bangladesh</p>
+        <a href="tel:+8801343831119">+880 1343-831119</a>
+        <a href="mailto:support@racoai.io">support@racoai.io</a>
+      </div>
+    </div>
+    <p class="foot-tagline">The next move is <span class="chrome-word">yours</span>.</p>
+    <div class="foot-legal">
+      <span>© 2026 RACO AI Technologies Ltd</span>
+      <span>Bristol · Dhaka</span>
+      <a href="mailto:hello@racoai.io">hello@racoai.io</a>
+    </div>
+  </div>
+</footer>
+
+<div id="tip" role="tooltip"></div>
+<script>
+(function(){
+  var pages=['home','products','research','services','about','careers'];
+  var burger=document.getElementById('burger');
+  var navLinks=document.getElementById('navLinks');
+
+  function show(page){
+    if(pages.indexOf(page)===-1)page='home';
+    pages.forEach(function(p){
+      document.getElementById('page-'+p).classList.toggle('visible',p===page);
+    });
+    document.querySelectorAll('.nav-links a').forEach(function(a){
+      a.classList.toggle('active',a.getAttribute('data-page')===page);
+    });
+    navLinks.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+    window.scrollTo({top:0,behavior:'auto'});
+  }
+
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[data-page]');
+    if(!a)return;
+    e.preventDefault();
+    var page=a.getAttribute('data-page');
+    show(page);
+    history.replaceState(null,'','#'+page);
+    var href=a.getAttribute('href');
+    if(href==='#contact'&&page==='home'){
+      requestAnimationFrame(function(){
+        var el=document.getElementById('contact');
+        if(el)el.scrollIntoView({behavior:'smooth'});
+      });
+    }
+  });
+
+  burger.addEventListener('click',function(){
+    var open=navLinks.classList.toggle('open');
+    burger.setAttribute('aria-expanded',String(open));
+  });
+
+  var track=document.getElementById('tickerTrack');
+  track.innerHTML+=track.innerHTML;
+
+  // hover tooltips for research charts
+  var tip=document.getElementById('tip');
+  function moveTip(e){
+    var x=e.clientX+14,y=e.clientY+14;
+    var r=tip.getBoundingClientRect();
+    if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-14;
+    if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';
+  }
+  document.addEventListener('mouseover',function(e){
+    var t=e.target.closest('[data-tip]');
+    if(!t)return;
+    tip.innerHTML=t.getAttribute('data-tip');
+    tip.style.opacity='1';
+    moveTip(e);
+  });
+  document.addEventListener('mousemove',function(e){
+    if(tip.style.opacity==='1')moveTip(e);
+  });
+  document.addEventListener('mouseout',function(e){
+    if(e.target.closest('[data-tip]'))tip.style.opacity='0';
+  });
+
+  var initial=(location.hash||'#home').slice(1);
+  show(pages.indexOf(initial)>-1?initial:'home');
+})();
+</script>
+</body>
+</html>
